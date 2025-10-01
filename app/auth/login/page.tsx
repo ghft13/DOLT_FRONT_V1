@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { createClient } from "@/lib/supabase/client";
+import { /* createClient */ } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,11 +26,12 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const supabase = createClient();
+    // const supabase = createClient();
     setIsLoading(true);
     setError(null);
 
     try {
+      /* Supabase login code commented out
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -41,6 +42,11 @@ export default function LoginPage() {
       } else {
         setError("Login failed: no session created");
       }
+      */
+      // Placeholder for login
+      console.log("Login attempted:", { email, password });
+      // Simulate successful login
+      router.push("/dashboard");
     } finally {
       setIsLoading(false);
     }

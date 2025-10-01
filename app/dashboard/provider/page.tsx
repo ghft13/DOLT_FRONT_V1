@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation"
-import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -7,30 +6,52 @@ import { Calendar, Clock, DollarSign, MapPin, Settings, Star, Users, Wrench } fr
 import Link from "next/link"
 
 export default async function ProviderDashboard() {
-  const supabase = await createClient()
+  // const supabase = await createClient()
 
-  const { data, error } = await supabase.auth.getUser()
-  if (error || !data?.user) {
-    redirect("/auth/login")
-  }
+  // const { data, error } = await supabase.auth.getUser()
+  // if (error || !data?.user) {
+  //   redirect("/auth/login")
+  // }
 
   // Get provider profile
-  const { data: profile } = await supabase.from("profiles").select("*").eq("id", data.user.id).single()
+  // const { data: profile } = await supabase.from("profiles").select("*").eq("id", data.user.id).single()
+  const profile = { full_name: "John Doe" } // placeholder
 
   // Get provider details
-  const { data: provider } = await supabase.from("service_providers").select("*").eq("user_id", data.user.id).single()
+  // const { data: provider } = await supabase.from("service_providers").select("*").eq("user_id", data.user.id).single()
+  const provider = { rating: 4.5, total_reviews: 12 } // placeholder
 
   // Get provider's bookings
-  const { data: bookings } = await supabase
-    .from("bookings")
-    .select(`
-      *,
-      services (name, price),
-      profiles!bookings_user_id_fkey (full_name)
-    `)
-    .eq("provider_id", provider?.id)
-    .order("scheduled_date", { ascending: true })
-    .limit(10)
+  // const { data: bookings } = await supabase
+  //   .from("bookings")
+  //   .select(`
+  //     *,
+  //     services (name, price),
+  //     profiles!bookings_user_id_fkey (full_name)
+  //   `)
+  //   .eq("provider_id", provider?.id)
+  //   .order("scheduled_date", { ascending: true })
+  //   .limit(10)
+  const bookings = [
+    {
+      id: "1",
+      services: { name: "Service 1", price: 50 },
+      status: "confirmed",
+      scheduled_date: new Date().toISOString(),
+      total_amount: 50,
+      address: "123 Main St",
+      profiles: { full_name: "Alice" },
+    },
+    {
+      id: "2",
+      services: { name: "Service 2", price: 75 },
+      status: "completed",
+      scheduled_date: new Date(Date.now() + 86400000).toISOString(),
+      total_amount: 75,
+      address: "456 Oak Ave",
+      profiles: { full_name: "Bob" },
+    },
+  ] // placeholder
 
   const getStatusColor = (status: string) => {
     switch (status) {

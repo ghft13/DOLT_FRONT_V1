@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { createClient } from "@/lib/supabase/client"
+import { /* createClient */ } from "@/lib/supabase/client" // commented Supabase import
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -26,88 +26,84 @@ export default function SignUpPage() {
   const router = useRouter()
   const { signup } = useAuth()
 
-  // const handleSignUp = async (e: React.FormEvent) => {
-  //   e.preventDefault()
-  //   const supabase = createClient()
-  //   setIsLoading(true)
-  //   setError(null)
+  // Supabase signup code commented out
+  /*
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const supabase = createClient()
+    setIsLoading(true)
+    setError(null)
 
-  //   if (password !== repeatPassword) {
-  //     setError("Passwords do not match")
-  //     setIsLoading(false)
-  //     return
-  //   }
+    if (password !== repeatPassword) {
+      setError("Passwords do not match")
+      setIsLoading(false)
+      return
+    }
 
-  //   if (!role) {
-  //     setError("Please select your role")
-  //     setIsLoading(false)
-  //     return
-  //   }
+    if (!role) {
+      setError("Please select your role")
+      setIsLoading(false)
+      return
+    }
 
-  //   try {
-  //     const { error } = await supabase.auth.signUp({
-  //       email,
-  //       password,
-  //       options: {
-  //         emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || `${window.location.origin}/dashboard`,
-  //         data: {
-  //           full_name: fullName,
-  //           phone: phone,
-  //           role: role,
-  //         },
-  //       },
-  //     })
-  //     if (error) throw error
-  //     router.push("/auth/signup-success")
-  //   } catch (error: unknown) {
-  //     setError(error instanceof Error ? error.message : "An error occurred")
-  //   } finally {
-  //     setIsLoading(false)
-  //   }
-  // }
-
-const handleSignUp = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setError(null);
-  setIsLoading(true);
-
-  if (password !== repeatPassword) {
-    setError("Passwords do not match");
-    setIsLoading(false);
-    return;
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || `${window.location.origin}/dashboard`,
+          data: {
+            full_name: fullName,
+            phone: phone,
+            role: role,
+          },
+        },
+      })
+      if (error) throw error
+      router.push("/auth/signup-success")
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : "An error occurred")
+    } finally {
+      setIsLoading(false)
+    }
   }
+  */
 
-  if (!role) {
-    setError("Please select your role");
-    setIsLoading(false);
-    return;
+  // Using AuthContext signup (safe for Netlify)
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+    setIsLoading(true)
+
+    if (password !== repeatPassword) {
+      setError("Passwords do not match")
+      setIsLoading(false)
+      return
+    }
+
+    if (!role) {
+      setError("Please select your role")
+      setIsLoading(false)
+      return
+    }
+
+    try {
+      await signup({
+        name: fullName,
+        email,
+        password,
+        mobnumber: phone,
+        role: role === "user" ? "homeowner" : "provider",
+      })
+
+      alert("Signup successful! Redirecting to dashboard...")
+      router.replace("/dashboard/user/book-service")
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Signup failed")
+    } finally {
+      setIsLoading(false)
+    }
   }
-
-  try {
-    // Call signup from AuthContext
-    await signup({
-      name: fullName,
-      email,
-      password,
-      mobnumber: phone,
-      role: role === "user" ? "homeowner" : "provider",
-    });
-
-    // Show success message
-    alert("Signup successful! Redirecting to dashboard...");
-    
-    // Redirect after successful signup
-    router.replace("/dashboard/user/book-service");
-  } catch (err: any) {
-    setError(err.response?.data?.message || "Signup failed");
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-  
-
-
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-white flex items-center justify-center p-6">
@@ -128,6 +124,7 @@ const handleSignUp = async (e: React.FormEvent) => {
           <CardContent>
             <form onSubmit={handleSignUp}>
               <div className="flex flex-col gap-4">
+                {/* Full Name */}
                 <div className="grid gap-2">
                   <Label htmlFor="fullName">Full Name</Label>
                   <Input
@@ -140,6 +137,8 @@ const handleSignUp = async (e: React.FormEvent) => {
                     className="h-12"
                   />
                 </div>
+
+                {/* Email */}
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -152,6 +151,8 @@ const handleSignUp = async (e: React.FormEvent) => {
                     className="h-12"
                   />
                 </div>
+
+                {/* Phone */}
                 <div className="grid gap-2">
                   <Label htmlFor="phone">Phone Number</Label>
                   <Input
@@ -163,6 +164,8 @@ const handleSignUp = async (e: React.FormEvent) => {
                     className="h-12"
                   />
                 </div>
+
+                {/* Role */}
                 <div className="grid gap-2">
                   <Label htmlFor="role">I am a</Label>
                   <Select value={role} onValueChange={setRole}>
@@ -175,6 +178,8 @@ const handleSignUp = async (e: React.FormEvent) => {
                     </SelectContent>
                   </Select>
                 </div>
+
+                {/* Password */}
                 <div className="grid gap-2">
                   <Label htmlFor="password">Password</Label>
                   <Input
@@ -186,6 +191,8 @@ const handleSignUp = async (e: React.FormEvent) => {
                     className="h-12"
                   />
                 </div>
+
+                {/* Confirm Password */}
                 <div className="grid gap-2">
                   <Label htmlFor="repeat-password">Confirm Password</Label>
                   <Input
@@ -197,11 +204,15 @@ const handleSignUp = async (e: React.FormEvent) => {
                     className="h-12"
                   />
                 </div>
+
+                {/* Error */}
                 {error && (
                   <div className="bg-red-50 border border-red-200 rounded-lg p-3">
                     <p className="text-sm text-red-600">{error}</p>
                   </div>
                 )}
+
+                {/* Submit */}
                 <Button
                   type="submit"
                   className="w-full h-12 bg-orange-500 hover:bg-orange-600 text-white font-semibold"
@@ -210,6 +221,8 @@ const handleSignUp = async (e: React.FormEvent) => {
                   {isLoading ? "Creating account..." : "Create Account"}
                 </Button>
               </div>
+
+              {/* Sign in link */}
               <div className="mt-6 text-center text-sm">
                 Already have an account?{" "}
                 <Link

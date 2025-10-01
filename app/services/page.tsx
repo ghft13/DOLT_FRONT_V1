@@ -1,21 +1,61 @@
-import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Clock, Star, Wrench } from "lucide-react"
 import Link from "next/link"
 
+// import { createClient } from "@/lib/supabase/server"
+
 export default async function ServicesPage() {
-  const supabase = await createClient()
+  // const supabase = await createClient()
 
   // Get all service categories with their services
-  const { data: categories } = await supabase
-    .from("service_categories")
-    .select(`
-      *,
-      services (*)
-    `)
-    .order("name")
+  // const { data: categories } = await supabase
+  //   .from("service_categories")
+  //   .select(`
+  //     *,
+  //     services (*)
+  //   `)
+  //   .order("name")
+
+  // Mock data for categories and services
+  const categories = [
+    {
+      id: "1",
+      name: "HVAC Services",
+      description: "Heating, Ventilation, and Air Conditioning solutions",
+      services: [
+        {
+          id: "1",
+          name: "Air Conditioner Maintenance",
+          price: 100,
+          description: "Full AC maintenance and cleaning service",
+          duration_minutes: 60,
+        },
+        {
+          id: "2",
+          name: "Heater Inspection",
+          price: 80,
+          description: "Check and repair your heater",
+          duration_minutes: 45,
+        },
+      ],
+    },
+    {
+      id: "2",
+      name: "Electrical Services",
+      description: "All your electrical maintenance needs",
+      services: [
+        {
+          id: "3",
+          name: "Wiring Checkup",
+          price: 120,
+          description: "Complete wiring inspection and repair",
+          duration_minutes: 90,
+        },
+      ],
+    },
+  ]
 
   return (
     <div className="min-h-screen bg-gray-50">
